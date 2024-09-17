@@ -19,7 +19,7 @@ const latestVersionsFromCdn = await $`curl -sf https://cdn.sheetjs.com/xlsx.lst 
  * we can use `npm view <package> versions --json` to get all versions and set the latest tag only for the highest version.
  * @type {string}
  */
-const latestNpmVersion = (await $`npm view xlsx@latest version`.text()).trim(); // TODO: Use correct xlsx-republish name after initial testing.
+const latestNpmVersion = (await $`npm view xlsx-republish@latest version`.text()).trim();
 
 /**
  * List of versions to publish to NPM from SheetJS CDN.
@@ -27,15 +27,14 @@ const latestNpmVersion = (await $`npm view xlsx@latest version`.text()).trim(); 
  */
 const versionsToPublish = await $`npx semver --range ">${latestNpmVersion}" ${latestVersionsFromCdn}`.lines();
 
-
-console.log(`Found ${versionsToPublish.length} versions to publish: ${versionsToPublish.join(', ')}`)
+console.log(`Found ${versionsToPublish.length} versions to publish: ${versionsToPublish.join(', ')}`);
 console.log({ latestNpmVersion, latestVersionsFromCdn, versionsToPublish });
 
-if(versionsToPublish.length == 0) {
+if (versionsToPublish.length == 0) {
   console.log(`::notice title=No action required::There is no new package to publish.`);
 }
 
-for(const version of versionsToPublish) {
+for (const version of versionsToPublish) {
   console.log(`[${version}] Installing from CDN into local folder...`);
   await $`npm install --prefix ${localStoragePathPrefix}/${version} https://cdn.sheetjs.com/xlsx-${version}/xlsx-${version}.tgz`;
 
@@ -46,12 +45,12 @@ for(const version of versionsToPublish) {
     await $`npm pkg set name=xlsx-republish`;
     await $`npm pkg set repository.url=https://github.com/NoNameProvided/xlsx-republish.git`;
   });
-  
+
   console.log(`[${version}] Creating tarball...`);
   await $`npm pack ${localStoragePathPrefix}/${version}/node_modules/xlsx --pack-destination ${localStoragePathPrefix}/${version}`;
 
   console.log(`[${version}] Publish tarball to registry...`);
-  await $`npm publish ${localStoragePathPrefix}/${version}/xlsx-republish-${version}.tgz --dry-run`; // TODO: Remove dry-run after initial testing.
+  await $`npm publish ${localStoragePathPrefix}/${version}/xlsx-republish-${version}.tgz`;
 }
 
 console.log(`Cleaning up local install folder...`);
