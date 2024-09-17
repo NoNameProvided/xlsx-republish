@@ -25,7 +25,13 @@ const latestNpmVersion = (await $`npm view xlsx-republish@latest version`.text()
  * List of versions to publish to NPM from SheetJS CDN.
  * @type {string[]}
  */
-const versionsToPublish = await $`npx semver --range ">${latestNpmVersion}" ${latestVersionsFromCdn}`.lines();
+let versionsToPublish = [];
+
+try {
+  versionsToPublish = await $`npx semver --range ">${latestNpmVersion}" ${latestVersionsFromCdn}`.lines();
+} catch (error) {
+  // We silently ignore then error, because when there is no match semver returns an error exit code instead of empty result. 
+}
 
 console.log(`Found ${versionsToPublish.length} versions to publish: ${versionsToPublish.join(', ')}`);
 console.log({ latestNpmVersion, latestVersionsFromCdn, versionsToPublish });
