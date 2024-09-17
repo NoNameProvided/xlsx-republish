@@ -1,0 +1,19 @@
+{
+  "name": "xlsx-republish",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A small scheduled script to republish new releases of SheetJS Community Edition to NPM.",
+  "license": "Apache-2.0",
+  "author": "Attila Olah",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NoNameProvided/xlsx-republish.git"
+  },
+  "scripts": {
+    "start": "npx zx ./scripts/publish.mjs"
+  },
+  "dependencies": {
+    "semver": "^7.6.3",
+    "zx": "^8.1.6"
+  }
+}

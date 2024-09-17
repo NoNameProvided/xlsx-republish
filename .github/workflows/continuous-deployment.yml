@@ -1,0 +1,22 @@
+name: Continious Deployment
+on:
+  schedule:
+    - cron: '0 8,18 * * *'
+  workflow_dispatch:
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'npm'
+          node-version: 'lts/*'
+          registry-url: https://registry.npmjs.org
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+      - name: Check & Publish
+        run: npx zx ./src/publish.mjs
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
