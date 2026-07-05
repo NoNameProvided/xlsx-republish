@@ -1,4 +1,4 @@
-name: Continious Deployment
+name: Publish to NPM
 on:
   schedule:
     - cron: '0 8,18 * * *'
@@ -8,8 +8,8 @@ jobs:
     name: Publish
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
         with:
           cache: 'npm'
           node-version: 'lts/*'
